@@ -29,6 +29,26 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.kie</groupId>
+			<artifactId>kie-ci</artifactId>
+			<version>7.20.0.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.kie</groupId>
+			<artifactId>kie-spring</artifactId>
+			<version>7.20.0.Final</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.securityoperationscenter</groupId>
+			<artifactId>siem-center-rules</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>jar</type>
+		</dependency>
+
 	</dependencies>
 
 	<build>
