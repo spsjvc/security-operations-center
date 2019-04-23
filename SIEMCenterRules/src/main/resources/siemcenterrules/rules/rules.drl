@@ -51,3 +51,12 @@ rule "Fifteen unsuccessful logins from the same ip in five days"
     then
         System.out.println("RULE FIRED: Fifteen unsuccessful logins from the same ip in five days.");
 end
+
+rule "Login from account inactive for 90 days"
+    when
+        $log: LoginLog($username : username)
+        not LoginLog(username == $username, timestamp.isAfter($log.getTimestamp()))
+        not LoginLog(username == $username, successful == true, timestamp.isAfter(LocalDateTime.now().minusDays(90)))
+    then
+        System.out.println("RULE FIRED: Login from account inactive for 90 days.");
+end

@@ -159,4 +159,52 @@ public class RulesTests {
 
         kieSession.dispose();
     }
+
+    @Test
+    public void loginFromAccountInactiveFor90Days() {
+        KieSession kieSession = kieContainer.newKieSession();
+        AgendaFilter filter = new RuleNameEqualsAgendaFilter( "Login from account inactive for 90 days");
+        kieSession.fireAllRules(filter);
+        int firedRules = kieSession.fireAllRules(filter);
+        Assert.assertEquals(0, firedRules);
+
+        Machine testMachine = new Machine("0.0.0.0", "Windows");
+
+        LoginLog loginLog = new LoginLog(
+            LocalDateTime.now(),
+            testMachine,
+            "testApplication",
+            "testUsername",
+            true
+        );
+        kieSession.insert(loginLog);
+
+        loginLog = new LoginLog(
+            LocalDateTime.now().plusDays(20),
+            testMachine,
+            "testApplication",
+            "testUsername",
+            true
+        );
+        kieSession.insert(loginLog);
+
+        firedRules = kieSession.fireAllRules(filter);
+        Assert.assertEquals(0, firedRules);
+        kieSession.dispose();
+
+        kieSession = kieContainer.newKieSession();
+
+        loginLog = new LoginLog(
+            LocalDateTime.now().minusDays(100),
+            testMachine,
+            "testApplication",
+            "testUsername",
+            true
+        );
+        kieSession.insert(loginLog);
+
+        firedRules = kieSession.fireAllRules(filter);
+        Assert.assertEquals(1, firedRules);
+        kieSession.dispose();
+    }
 }
