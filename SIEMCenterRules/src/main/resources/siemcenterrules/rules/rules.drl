@@ -1,7 +1,15 @@
 package siemcenterrules.rules;
 
 import java.time.LocalDateTime;
+import com.securityoperationscenter.siemcenter.model.ErrorLog;
 import com.securityoperationscenter.siemcenter.model.LoginLog;
+
+rule "Detect when ErrorLog appears"
+    when
+       ErrorLog()
+    then
+      System.out.println("RULE FIRED: Detect when ErrorLog appears.");
+end
 
 rule "Three unsuccessful logins with the same username"
     when

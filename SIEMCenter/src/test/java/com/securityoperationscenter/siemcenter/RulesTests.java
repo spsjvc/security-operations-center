@@ -1,5 +1,6 @@
 package com.securityoperationscenter.siemcenter;
 
+import com.securityoperationscenter.siemcenter.model.ErrorLog;
 import com.securityoperationscenter.siemcenter.model.LoginLog;
 import com.securityoperationscenter.siemcenter.model.Machine;
 import org.drools.core.base.RuleNameEqualsAgendaFilter;
@@ -21,6 +22,27 @@ public class RulesTests {
 
     @Autowired
     KieContainer kieContainer;
+
+    @Test
+    public void detectWhenErrorLogAppears() {
+        KieSession kieSession = kieContainer.newKieSession();
+        AgendaFilter filter = new RuleNameEqualsAgendaFilter("Detect when ErrorLog appears");
+        int firedRules = kieSession.fireAllRules(filter);
+        Assert.assertEquals(0, firedRules);
+
+        Machine testMachine = new Machine("0.0.0.0", "Windows");
+
+        ErrorLog errorLog = new ErrorLog(
+            LocalDateTime.now(),
+            testMachine,
+            "testApplication"
+        );
+
+        kieSession.insert(errorLog);
+        firedRules = kieSession.fireAllRules(filter);
+        Assert.assertEquals(1, firedRules);
+        kieSession.dispose();
+    }
 
     @Test
     public void threeUnsuccessfulLoginsWithTheSameUsername() {
