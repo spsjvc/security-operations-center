@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @SpringBootTest
@@ -32,7 +33,7 @@ public class RulesTests {
         Machine testMachine = new Machine("0.0.0.0", "Windows");
 
         LoginLog loginLog = new LoginLog(
-            new Date(),
+            LocalDateTime.now(),
             testMachine,
             "testApplication",
             "testUsername",
@@ -46,7 +47,7 @@ public class RulesTests {
 
         kieSession = kieContainer.newKieSession();
         loginLog = new LoginLog(
-            new Date(),
+            LocalDateTime.now(),
             testMachine,
             "testApplication",
             "testUsername",
@@ -55,7 +56,7 @@ public class RulesTests {
         kieSession.insert(loginLog);
 
         loginLog = new LoginLog(
-            new Date(),
+            LocalDateTime.now(),
             testMachine,
             "testApplication",
             "testUsername",
@@ -64,7 +65,7 @@ public class RulesTests {
         kieSession.insert(loginLog);
 
         loginLog = new LoginLog(
-            new Date(),
+            LocalDateTime.now(),
             testMachine,
             "testApplication",
             "testUsername",

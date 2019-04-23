@@ -1,12 +1,12 @@
 package com.securityoperationscenter.siemcenter.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class ProfileUpdateLog extends Log {
 
     private String username;
 
-    public ProfileUpdateLog(Date timestamp, Machine machine, String application, String username) {
+    public ProfileUpdateLog(LocalDateTime timestamp, Machine machine, String application, String username) {
         super(timestamp, machine, application);
 
         this.username = username;

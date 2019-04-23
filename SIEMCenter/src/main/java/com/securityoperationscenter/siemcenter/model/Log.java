@@ -1,24 +1,24 @@
 package com.securityoperationscenter.siemcenter.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public abstract class Log {
 
-    protected Date timestamp;
+    protected LocalDateTime timestamp;
     protected Machine machine;
     protected String application;
 
-    public Log(Date timestamp, Machine machine, String application) {
+    public Log(LocalDateTime timestamp, Machine machine, String application) {
         this.timestamp = timestamp;
         this.machine = machine;
         this.application = application;
     }
 
-    public Date getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 

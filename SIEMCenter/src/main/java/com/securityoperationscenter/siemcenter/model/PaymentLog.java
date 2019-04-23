@@ -1,10 +1,10 @@
 package com.securityoperationscenter.siemcenter.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class PaymentLog extends Log {
 
-    public PaymentLog(Date timestamp, Machine machine, String application) {
+    public PaymentLog(LocalDateTime timestamp, Machine machine, String application) {
         super(timestamp, machine, application);
     }
 }
