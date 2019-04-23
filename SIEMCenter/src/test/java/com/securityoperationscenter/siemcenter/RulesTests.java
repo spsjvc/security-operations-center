@@ -1,5 +1,6 @@
 package com.securityoperationscenter.siemcenter;
 
+import com.securityoperationscenter.siemcenter.model.AntivirusThreatDetectionLog;
 import com.securityoperationscenter.siemcenter.model.ErrorLog;
 import com.securityoperationscenter.siemcenter.model.LoginLog;
 import com.securityoperationscenter.siemcenter.model.Machine;
@@ -202,6 +203,57 @@ public class RulesTests {
             true
         );
         kieSession.insert(loginLog);
+
+        firedRules = kieSession.fireAllRules(filter);
+        Assert.assertEquals(1, firedRules);
+        kieSession.dispose();
+    }
+
+    @Test
+    public void sevenAntivirusThreatsFromSameMachine() {
+        KieSession kieSession = kieContainer.newKieSession();
+        AgendaFilter filter = new RuleNameEqualsAgendaFilter( "Seven antivirus threats from same machine");
+        kieSession.fireAllRules(filter);
+        int firedRules = kieSession.fireAllRules(filter);
+        Assert.assertEquals(0, firedRules);
+
+        Machine machine1 = new Machine("0.0.0.0", "Windows");
+        Machine machine2 = new Machine("0.0.0.1", "Windows");
+
+        AntivirusThreatDetectionLog log;
+
+        for (int i = 0; i < 5; i++) {
+            log = new AntivirusThreatDetectionLog(
+                LocalDateTime.now(),
+                machine1,
+                "testApplication"
+            );
+            kieSession.insert(log);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            log = new AntivirusThreatDetectionLog(
+                LocalDateTime.now(),
+                machine2,
+                "testApplication"
+            );
+            kieSession.insert(log);
+        }
+
+        firedRules = kieSession.fireAllRules(filter);
+        Assert.assertEquals(0, firedRules);
+        kieSession.dispose();
+
+        kieSession = kieContainer.newKieSession();
+
+        for (int i = 0; i < 7; i++) {
+            log = new AntivirusThreatDetectionLog(
+                LocalDateTime.now(),
+                machine1,
+                "testApplication"
+            );
+            kieSession.insert(log);
+        }
 
         firedRules = kieSession.fireAllRules(filter);
         Assert.assertEquals(1, firedRules);

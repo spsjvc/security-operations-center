@@ -3,6 +3,7 @@ package siemcenterrules.rules;
 import java.time.LocalDateTime;
 import com.securityoperationscenter.siemcenter.model.ErrorLog;
 import com.securityoperationscenter.siemcenter.model.LoginLog;
+import com.securityoperationscenter.siemcenter.model.AntivirusThreatDetectionLog;
 
 rule "Detect when ErrorLog appears"
     when
@@ -59,4 +60,21 @@ rule "Login from account inactive for 90 days"
         not LoginLog(username == $username, successful == true, timestamp.isAfter(LocalDateTime.now().minusDays(90)))
     then
         System.out.println("RULE FIRED: Login from account inactive for 90 days.");
+end
+
+rule "Seven antivirus threats from same machine"
+    when
+      threat: AntivirusThreatDetectionLog($machine: machine, $timestamp: timestamp )
+      not AntivirusThreatDetectionLog(machine.ip == $machine.ip, timestamp.isAfter($timestamp))
+
+      Number(intValue >= 7) from accumulate(
+          $threats: AntivirusThreatDetectionLog(
+              machine.ip == $machine.ip,
+              timestamp.isAfter(LocalDateTime.now().minusDays(10)),
+              !timestamp.isAfter(LocalDateTime.now())
+          ),
+          count($threats)
+      )
+    then
+      System.out.println("RULE FIRED: Seven antivirus threats from same machine.");
 end
