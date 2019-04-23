@@ -1,9 +1,13 @@
 package siemcenterrules.rules;
 
+import java.util.List;
 import java.time.LocalDateTime;
+import com.securityoperationscenter.siemcenter.model.Log;
 import com.securityoperationscenter.siemcenter.model.ErrorLog;
 import com.securityoperationscenter.siemcenter.model.LoginLog;
 import com.securityoperationscenter.siemcenter.model.AntivirusThreatDetectionLog;
+
+global List maliciousIpAddresses;
 
 rule "Detect when ErrorLog appears"
     when
@@ -77,4 +81,11 @@ rule "Seven antivirus threats from same machine"
       )
     then
       System.out.println("RULE FIRED: Seven antivirus threats from same machine.");
+end
+
+rule "Detect malicious ip address"
+    when
+        Log(machine.ip memberOf maliciousIpAddresses)
+    then
+        System.out.println("RULE FIRED: Detect malicious ip address.");
 end

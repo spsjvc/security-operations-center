@@ -16,6 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -254,6 +256,54 @@ public class RulesTests {
             );
             kieSession.insert(log);
         }
+
+        firedRules = kieSession.fireAllRules(filter);
+        Assert.assertEquals(1, firedRules);
+        kieSession.dispose();
+    }
+
+    @Test
+    public void detectMaliciousIPAddress() {
+        List<String> maliciousIpAddresses = new ArrayList<String>();
+        maliciousIpAddresses.add("maliciousIP");
+
+        KieSession kieSession = kieContainer.newKieSession();
+        kieSession.setGlobal("maliciousIpAddresses", maliciousIpAddresses);
+        AgendaFilter filter = new RuleNameEqualsAgendaFilter("Detect malicious ip address");
+        int firedRules = kieSession.fireAllRules(filter);
+        Assert.assertEquals(0, firedRules);
+        kieSession.dispose();
+
+        kieSession = kieContainer.newKieSession();
+        kieSession.setGlobal("maliciousIpAddresses", maliciousIpAddresses);
+
+        Machine okMachine = new Machine("okIP", "Windows");
+        Machine maliciousMachine = new Machine("maliciousIP", "Windows");
+
+        LoginLog log = new LoginLog(
+            LocalDateTime.now(),
+            okMachine,
+            "testApplication",
+            "testUsername",
+            true
+        );
+        kieSession.insert(log);
+
+        firedRules = kieSession.fireAllRules(filter);
+        Assert.assertEquals(0, firedRules);
+        kieSession.dispose();
+
+        kieSession = kieContainer.newKieSession();
+        kieSession.setGlobal("maliciousIpAddresses", maliciousIpAddresses);
+
+        log = new LoginLog(
+            LocalDateTime.now(),
+            maliciousMachine,
+            "testApplication",
+            "testUsername",
+            true
+        );
+        kieSession.insert(log);
 
         firedRules = kieSession.fireAllRules(filter);
         Assert.assertEquals(1, firedRules);
