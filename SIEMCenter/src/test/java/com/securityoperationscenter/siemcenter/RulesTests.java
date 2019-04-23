@@ -1,9 +1,6 @@
 package com.securityoperationscenter.siemcenter;
 
-import com.securityoperationscenter.siemcenter.model.AntivirusThreatDetectionLog;
-import com.securityoperationscenter.siemcenter.model.ErrorLog;
-import com.securityoperationscenter.siemcenter.model.LoginLog;
-import com.securityoperationscenter.siemcenter.model.Machine;
+import com.securityoperationscenter.siemcenter.model.*;
 import org.drools.core.base.RuleNameEqualsAgendaFilter;
 import org.junit.Assert;
 import org.junit.Test;
@@ -304,6 +301,32 @@ public class RulesTests {
             true
         );
         kieSession.insert(log);
+
+        firedRules = kieSession.fireAllRules(filter);
+        Assert.assertEquals(1, firedRules);
+        kieSession.dispose();
+    }
+
+    @Test
+    public void firePaymentSystemAlarm() {
+        KieSession kieSession = kieContainer.newKieSession();
+        AgendaFilter filter = new RuleNameEqualsAgendaFilter("Fire payment system alarm");
+        int firedRules = kieSession.fireAllRules(filter);
+        Assert.assertEquals(0, firedRules);
+
+        LocalDateTime now = LocalDateTime.now();
+        Machine machine = new Machine("0.0.0.0", "Windows");
+        PaymentLog paymentLog;
+
+        for (int i = 0; i < 51; i++) {
+             paymentLog = new PaymentLog(
+                now.minusSeconds(50 - i + 1),
+                machine,
+                "testApplication",
+                "testUsername"
+            );
+            kieSession.insert(paymentLog);
+        }
 
         firedRules = kieSession.fireAllRules(filter);
         Assert.assertEquals(1, firedRules);

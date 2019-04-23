@@ -2,9 +2,12 @@ package siemcenterrules.rules;
 
 import java.util.List;
 import java.time.LocalDateTime;
+import com.securityoperationscenter.siemcenter.model.Alarm;
+import com.securityoperationscenter.siemcenter.model.AlarmType;
 import com.securityoperationscenter.siemcenter.model.Log;
 import com.securityoperationscenter.siemcenter.model.ErrorLog;
 import com.securityoperationscenter.siemcenter.model.LoginLog;
+import com.securityoperationscenter.siemcenter.model.PaymentLog;
 import com.securityoperationscenter.siemcenter.model.AntivirusThreatDetectionLog;
 
 global List maliciousIpAddresses;
@@ -68,19 +71,19 @@ end
 
 rule "Seven antivirus threats from same machine"
     when
-      threat: AntivirusThreatDetectionLog($machine: machine, $timestamp: timestamp )
-      not AntivirusThreatDetectionLog(machine.ip == $machine.ip, timestamp.isAfter($timestamp))
+        threat: AntivirusThreatDetectionLog($machine: machine, $timestamp: timestamp )
+        not AntivirusThreatDetectionLog(machine.ip == $machine.ip, timestamp.isAfter($timestamp))
 
-      Number(intValue >= 7) from accumulate(
-          $threats: AntivirusThreatDetectionLog(
-              machine.ip == $machine.ip,
-              timestamp.isAfter(LocalDateTime.now().minusDays(10)),
-              !timestamp.isAfter(LocalDateTime.now())
-          ),
-          count($threats)
-      )
+        Number(intValue >= 7) from accumulate(
+            $threats: AntivirusThreatDetectionLog(
+                machine.ip == $machine.ip,
+                timestamp.isAfter(LocalDateTime.now().minusDays(10)),
+                !timestamp.isAfter(LocalDateTime.now())
+            ),
+            count($threats)
+        )
     then
-      System.out.println("RULE FIRED: Seven antivirus threats from same machine.");
+        System.out.println("RULE FIRED: Seven antivirus threats from same machine.");
 end
 
 rule "Detect malicious ip address"
@@ -88,4 +91,27 @@ rule "Detect malicious ip address"
         Log(machine.ip memberOf maliciousIpAddresses)
     then
         System.out.println("RULE FIRED: Detect malicious ip address.");
+end
+
+rule "Fire payment system alarm"
+    when
+        $log: PaymentLog($username: username, $timestamp: timestamp)
+        not PaymentLog(username == $username , timestamp.isAfter($timestamp))
+
+        Number(intValue > 50) from accumulate(
+            $paymentLogs: PaymentLog(
+                username == $username,
+                timestamp.isAfter(LocalDateTime.now().minusSeconds(60))
+            ),
+            count($paymentLogs)
+        )
+    then
+        insert (
+            new Alarm(
+                AlarmType.PAYMENT,
+                "Payment system alarm!",
+                $username,
+                LocalDateTime.now()
+            )
+        );
 end
