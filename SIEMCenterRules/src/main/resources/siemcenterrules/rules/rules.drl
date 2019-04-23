@@ -1,6 +1,6 @@
 package siemcenterrules.rules;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import com.securityoperationscenter.siemcenter.model.LoginLog;
 
 rule "Three unsuccessful logins with the same username"
@@ -18,3 +18,28 @@ rule "Three unsuccessful logins with the same username"
         System.out.println("RULE FIRED: Three unsuccessful logins with the same username.");
 end
 
+rule "Fifteen unsuccessful logins from the same ip in five days"
+    when
+        $log: LoginLog(
+            successful != true,
+            $ip: machine.ip,
+            timestamp.isAfter(LocalDateTime.now().minusDays(5))
+        )
+        not LoginLog(
+            successful != true,
+            $ip == machine.ip,
+            timestamp.isAfter(LocalDateTime.now().minusDays(5)),
+            timestamp.isAfter($log.getTimestamp())
+        )
+
+        Number(intValue >= 15) from accumulate(
+            $logs: LoginLog(
+                successful != true,
+                $ip == machine.ip,
+                timestamp.isAfter(LocalDateTime.now().minusDays(5))
+            ),
+            count($logs)
+        )
+    then
+        System.out.println("RULE FIRED: Fifteen unsuccessful logins from the same ip in five days.");
+end
