@@ -1,6 +1,5 @@
 package com.securityoperationscenter.siemcenter;
 
-import com.securityoperationscenter.siemcenter.model.Example;
 import com.securityoperationscenter.siemcenter.model.LoginLog;
 import com.securityoperationscenter.siemcenter.model.Machine;
 import org.drools.core.base.RuleNameEqualsAgendaFilter;
