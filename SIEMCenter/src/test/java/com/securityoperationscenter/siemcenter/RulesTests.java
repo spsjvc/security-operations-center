@@ -332,4 +332,58 @@ public class RulesTests {
         Assert.assertEquals(1, firedRules);
         kieSession.dispose();
     }
+
+    @Test
+    public void setAccountRiskLevelToLow() {
+        KieSession kieSession = kieContainer.newKieSession();
+        AgendaFilter filter = new RuleNameEqualsAgendaFilter("Set account risk level to low when no alarm in past 90 days");
+        int firedRules = kieSession.fireAllRules(filter);
+        Assert.assertEquals(0, firedRules);
+        kieSession.dispose();
+
+        kieSession = kieContainer.newKieSession();
+        Account account = new Account(
+            "username",
+            "password",
+            AccountType.USER,
+            RiskLevel.MODERATE
+        );
+        kieSession.insert(account);
+
+        Alarm alarm = new Alarm(
+            AlarmType.PAYMENT,
+            "payment alarm",
+            "username",
+            LocalDateTime.now().minusDays(100)
+        );
+        kieSession.insert(alarm);
+
+        firedRules = kieSession.fireAllRules(filter);
+        Assert.assertEquals(1, firedRules);
+        Assert.assertEquals(account.getRiskLevel(), RiskLevel.LOW);
+        kieSession.dispose();
+
+        kieSession = kieContainer.newKieSession();
+        account = new Account(
+            "username",
+            "password",
+            AccountType.USER,
+            RiskLevel.MODERATE
+        );
+        kieSession.insert(account);
+
+        // alarm fired in past 90 days
+        alarm = new Alarm(
+            AlarmType.PAYMENT,
+            "payment alarm",
+            "username",
+            LocalDateTime.now().minusDays(40)
+        );
+        kieSession.insert(alarm);
+
+        firedRules = kieSession.fireAllRules(filter);
+        Assert.assertEquals(0, firedRules);
+        Assert.assertEquals(account.getRiskLevel(), RiskLevel.MODERATE);
+        kieSession.dispose();
+    }
 }

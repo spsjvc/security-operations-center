@@ -2,6 +2,8 @@ package siemcenterrules.rules;
 
 import java.util.List;
 import java.time.LocalDateTime;
+import com.securityoperationscenter.siemcenter.model.Account;
+import com.securityoperationscenter.siemcenter.model.RiskLevel;
 import com.securityoperationscenter.siemcenter.model.Alarm;
 import com.securityoperationscenter.siemcenter.model.AlarmType;
 import com.securityoperationscenter.siemcenter.model.Log;
@@ -114,4 +116,20 @@ rule "Fire payment system alarm"
                 LocalDateTime.now()
             )
         );
+end
+
+rule "Set account risk level to low when no alarm in past 90 days"
+   no-loop
+   when
+       $account: Account($username: username)
+       not Alarm(
+           username == $username,
+           timestamp.isAfter(LocalDateTime.now().minusDays(90))
+       )
+   then
+       modify($account) {
+           setRiskLevel(RiskLevel.LOW);
+       }
+
+       System.out.println("RULE FIRED: Set account risk level to low when no alarm in past 90 days for user: " + $username + ".");
 end
