@@ -1,0 +1,20 @@
+package siemcenterrules.rules;
+
+import java.util.ArrayList;
+import com.securityoperationscenter.siemcenter.model.LoginLog;
+
+rule "Three unsuccessful logins with the same username"
+    when
+        $log: LoginLog(successful != true, $username: username)
+
+        Number(intValue >= 3) from accumulate(
+            $logs: LoginLog(
+                successful != true,
+                username == $username
+            ),
+            count($logs)
+        )
+    then
+        System.out.println("RULE FIRED: Three unsuccessful logins with the same username.");
+end
+
