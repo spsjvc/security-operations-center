@@ -1,16 +1,18 @@
 package com.securityoperationscenter.siemcenter.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Alarm {
 
     private AlarmType type;
     private String message;
-    private Date timestamp;
+    private String username;
+    private LocalDateTime timestamp;
 
-    public Alarm(AlarmType type, String message, Date timestamp) {
+    public Alarm(AlarmType type, String message, String username, LocalDateTime timestamp) {
         this.type = type;
         this.message = message;
+        this.username = username;
         this.timestamp = timestamp;
     }
 
@@ -30,11 +32,19 @@ public class Alarm {
         this.message = message;
     }
 
-    public Date getTimestamp() {
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 }
