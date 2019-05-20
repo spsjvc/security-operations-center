@@ -351,7 +351,7 @@ public class RulesTests {
         kieSession.insert(account);
 
         Alarm alarm = new Alarm(
-            AlarmType.PAYMENT,
+            "PAYMENT",
             "payment alarm",
             "username",
             LocalDateTime.now().minusDays(100)
@@ -374,7 +374,7 @@ public class RulesTests {
 
         // alarm fired in past 90 days
         alarm = new Alarm(
-            AlarmType.PAYMENT,
+            "PAYMENT",
             "payment alarm",
             "username",
             LocalDateTime.now().minusDays(40)

@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import com.securityoperationscenter.siemcenter.model.Account;
 import com.securityoperationscenter.siemcenter.model.RiskLevel;
 import com.securityoperationscenter.siemcenter.model.Alarm;
-import com.securityoperationscenter.siemcenter.model.AlarmType;
 import com.securityoperationscenter.siemcenter.model.Log;
 import com.securityoperationscenter.siemcenter.model.ErrorLog;
 import com.securityoperationscenter.siemcenter.model.LoginLog;
@@ -111,7 +110,7 @@ rule "Fire payment system alarm"
     then
         insert (
             new Alarm(
-                AlarmType.PAYMENT,
+                "PAYMENT",
                 "Payment system alarm!",
                 $username,
                 LocalDateTime.now()

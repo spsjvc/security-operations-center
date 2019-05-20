@@ -4,23 +4,23 @@ import java.time.LocalDateTime;
 
 public class Alarm {
 
-    private AlarmType type;
+    private String type;
     private String message;
     private String username;
     private LocalDateTime timestamp;
 
-    public Alarm(AlarmType type, String message, String username, LocalDateTime timestamp) {
+    public Alarm(String type, String message, String username, LocalDateTime timestamp) {
         this.type = type;
         this.message = message;
         this.username = username;
         this.timestamp = timestamp;
     }
 
-    public AlarmType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(AlarmType type) {
+    public void setType(String type) {
         this.type = type;
     }
 
