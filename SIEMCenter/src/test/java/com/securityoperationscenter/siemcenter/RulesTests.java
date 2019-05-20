@@ -96,7 +96,7 @@ public class RulesTests {
 
         firedRules = kieSession.fireAllRules(filter);
 
-        Assert.assertEquals(3, firedRules);
+        Assert.assertEquals(1, firedRules);
         kieSession.dispose();
     }
 

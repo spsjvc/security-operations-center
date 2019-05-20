@@ -24,6 +24,7 @@ end
 rule "Three unsuccessful logins with the same username"
     when
         $log: LoginLog(successful != true, $username: username)
+        not LoginLog(successful != true, $username == username, timestamp.isAfter($log.getTimestamp()))
 
         Number(intValue >= 3) from accumulate(
             $logs: LoginLog(
