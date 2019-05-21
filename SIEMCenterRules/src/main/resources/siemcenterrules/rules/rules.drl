@@ -20,22 +20,6 @@ rule "Detect when ErrorLog appears"
       System.out.println("RULE FIRED: Detect when ErrorLog appears.");
 end
 
-rule "Three unsuccessful logins with the same username"
-    when
-        $log: LoginLog(successful != true, $username: username)
-        not LoginLog(successful != true, $username == username, timestamp.isAfter($log.getTimestamp()))
-
-        Number(intValue >= 3) from accumulate(
-            $logs: LoginLog(
-                successful != true,
-                username == $username
-            ),
-            count($logs)
-        )
-    then
-        System.out.println("RULE FIRED: Three unsuccessful logins with the same username.");
-end
-
 rule "Detect malicious ip address"
     when
         Log(machine.ip memberOf maliciousIpAddresses)

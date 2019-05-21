@@ -54,7 +54,20 @@ public class RulesTests {
 
     @Test
     public void threeUnsuccessfulLoginsWithTheSameUsername() {
-        KieSession kieSession = kieContainer.newKieSession();
+        InputStream template = RulesTests.class.getResourceAsStream(
+                "/siemcenterrules/rules/unsuccessful-logins-same-username.drt"
+        );
+
+        DataProvider dataProvider = new ArrayDataProvider(
+            new String[][]{
+                new String[]{"3"}
+            }
+        );
+
+        DataProviderCompiler converter = new DataProviderCompiler();
+        String drl = converter.compile(dataProvider, template);
+
+        KieSession kieSession = createKieSessionFromDRL(drl);
         AgendaFilter filter = new RuleNameEqualsAgendaFilter("Three unsuccessful logins with the same username");
         int firedRules = kieSession.fireAllRules(filter);
         Assert.assertEquals(0, firedRules);
@@ -74,7 +87,7 @@ public class RulesTests {
         Assert.assertEquals(0, firedRules);
         kieSession.dispose();
 
-        kieSession = kieContainer.newKieSession();
+        kieSession = createKieSessionFromDRL(drl);
         loginLog = new LoginLog(
             LocalDateTime.now(),
             testMachine,
