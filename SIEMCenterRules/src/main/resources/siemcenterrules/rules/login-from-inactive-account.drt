@@ -1,0 +1,18 @@
+template header
+interval
+
+import java.time.LocalDateTime;
+import com.securityoperationscenter.siemcenter.model.LoginLog;
+
+template "login-from-inactive-account"
+
+rule "Login from account inactive for @{interval} days"
+    when
+        $log: LoginLog($username : username)
+        not LoginLog(username == $username, timestamp.isAfter($log.getTimestamp()))
+        not LoginLog(username == $username, successful == true, timestamp.isAfter(LocalDateTime.now().minusDays(@{interval})))
+    then
+        System.out.println("RULE FIRED: Login from account inactive for @{interval} days.");
+end
+
+end template
