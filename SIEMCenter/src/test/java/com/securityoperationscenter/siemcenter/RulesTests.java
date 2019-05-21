@@ -110,7 +110,20 @@ public class RulesTests {
 
     @Test
     public void fifteenUnsuccessfulLoginsFromTheSameIp() {
-        KieSession kieSession = kieContainer.newKieSession();
+        InputStream template = RulesTests.class.getResourceAsStream(
+            "/siemcenterrules/rules/unsuccessful-logins-same-ip.drt"
+        );
+
+        DataProvider dataProvider = new ArrayDataProvider(
+            new String[][]{
+                new String[]{"15", "5"}
+            }
+        );
+
+        DataProviderCompiler converter = new DataProviderCompiler();
+        String drl = converter.compile(dataProvider, template);
+
+        KieSession kieSession = createKieSessionFromDRL(drl);
         AgendaFilter filter = new RuleNameEqualsAgendaFilter("Fifteen unsuccessful logins from the same ip in five days");
         int firedRules = kieSession.fireAllRules(filter);
         Assert.assertEquals(0, firedRules);
