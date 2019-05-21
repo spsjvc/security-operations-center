@@ -55,7 +55,7 @@ public class RulesTests {
     @Test
     public void threeUnsuccessfulLoginsWithTheSameUsername() {
         InputStream template = RulesTests.class.getResourceAsStream(
-                "/siemcenterrules/rules/unsuccessful-logins-same-username.drt"
+            "/siemcenterrules/rules/unsuccessful-logins-same-username.drt"
         );
 
         DataProvider dataProvider = new ArrayDataProvider(

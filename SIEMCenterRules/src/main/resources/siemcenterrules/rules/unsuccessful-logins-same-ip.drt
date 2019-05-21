@@ -11,21 +11,14 @@ rule "@{logins} unsuccessful logins from the same ip in @{days} days"
     when
         $log: LoginLog(
             successful != true,
-            $ip: machine.ip,
-            timestamp.isAfter(LocalDateTime.now().minusDays(@{days}))
-        )
-        not LoginLog(
-            successful != true,
-            $ip == machine.ip,
-            timestamp.isAfter(LocalDateTime.now().minusDays(@{days})),
-            timestamp.isAfter($log.getTimestamp())
+            $ip: machine.ip
         )
 
         Number(intValue >= @{logins}) from accumulate(
             $logs: LoginLog(
                 successful != true,
                 $ip == machine.ip,
-                timestamp.isAfter(LocalDateTime.now().minusDays(@{days}))
+                this meets[@{days}d] $log
             ),
             count($logs)
         )

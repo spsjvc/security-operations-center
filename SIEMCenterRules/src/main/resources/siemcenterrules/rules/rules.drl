@@ -30,12 +30,11 @@ end
 rule "Fire payment system alarm"
     when
         $log: PaymentLog($username: username, $timestamp: timestamp)
-        not PaymentLog(username == $username , timestamp.isAfter($timestamp))
 
         Number(intValue > 50) from accumulate(
             $paymentLogs: PaymentLog(
                 username == $username,
-                timestamp.isAfter(LocalDateTime.now().minusSeconds(60))
+                over window: time(60s),
             ),
             count($paymentLogs)
         )
@@ -54,9 +53,12 @@ rule "Set account risk level to low when no alarm in past 90 days"
    no-loop
    when
        $account: Account($username: username)
-       not Alarm(
-           username == $username,
-           timestamp.isAfter(LocalDateTime.now().minusDays(90))
+
+       Number(intValue = 0) from accumulate(
+            Alarm(
+               username == $username,
+               over window: time(90d),
+            )
        )
    then
        modify($account) {
