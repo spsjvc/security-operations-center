@@ -36,23 +36,6 @@ rule "Three unsuccessful logins with the same username"
         System.out.println("RULE FIRED: Three unsuccessful logins with the same username.");
 end
 
-rule "Seven antivirus threats from same machine"
-    when
-        threat: AntivirusThreatDetectionLog($machine: machine, $timestamp: timestamp )
-        not AntivirusThreatDetectionLog(machine.ip == $machine.ip, timestamp.isAfter($timestamp))
-
-        Number(intValue >= 7) from accumulate(
-            $threats: AntivirusThreatDetectionLog(
-                machine.ip == $machine.ip,
-                timestamp.isAfter(LocalDateTime.now().minusDays(10)),
-                !timestamp.isAfter(LocalDateTime.now())
-            ),
-            count($threats)
-        )
-    then
-        System.out.println("RULE FIRED: Seven antivirus threats from same machine.");
-end
-
 rule "Detect malicious ip address"
     when
         Log(machine.ip memberOf maliciousIpAddresses)

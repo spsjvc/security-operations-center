@@ -244,7 +244,20 @@ public class RulesTests {
 
     @Test
     public void sevenAntivirusThreatsFromSameMachine() {
-        KieSession kieSession = kieContainer.newKieSession();
+        InputStream template = RulesTests.class.getResourceAsStream(
+            "/siemcenterrules/rules/antivirus-threats-same-machine.drt"
+        );
+
+        DataProvider dataProvider = new ArrayDataProvider(
+            new String[][]{
+                new String[]{"7", "10"}
+            }
+        );
+
+        DataProviderCompiler converter = new DataProviderCompiler();
+        String drl = converter.compile(dataProvider, template);
+
+        KieSession kieSession = createKieSessionFromDRL(drl);
         AgendaFilter filter = new RuleNameEqualsAgendaFilter( "Seven antivirus threats from same machine");
         kieSession.fireAllRules(filter);
         int firedRules = kieSession.fireAllRules(filter);
@@ -277,7 +290,7 @@ public class RulesTests {
         Assert.assertEquals(0, firedRules);
         kieSession.dispose();
 
-        kieSession = kieContainer.newKieSession();
+        kieSession = createKieSessionFromDRL(drl);
 
         for (int i = 0; i < 7; i++) {
             log = new AntivirusThreatDetectionLog(

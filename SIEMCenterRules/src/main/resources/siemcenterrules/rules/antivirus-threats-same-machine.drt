@@ -1,0 +1,27 @@
+template header
+threats
+days
+
+import java.time.LocalDateTime;
+import com.securityoperationscenter.siemcenter.model.AntivirusThreatDetectionLog;
+
+template "antivirus-threats-same-machine"
+
+rule "@{threats} antivirus threats from the same machine in the past @{days} days."
+    when
+        threat: AntivirusThreatDetectionLog($machine: machine, $timestamp: timestamp )
+        not AntivirusThreatDetectionLog(machine.ip == $machine.ip, timestamp.isAfter($timestamp))
+
+        Number(intValue >= @{threats}) from accumulate(
+            $threats: AntivirusThreatDetectionLog(
+                machine.ip == $machine.ip,
+                timestamp.isAfter(LocalDateTime.now().minusDays(@{days})),
+                !timestamp.isAfter(LocalDateTime.now())
+            ),
+            count($threats)
+        )
+    then
+        System.out.println("RULE FIRED: @{threats} antivirus threats from the same machine in the past @{days} days.");
+end
+
+end template
