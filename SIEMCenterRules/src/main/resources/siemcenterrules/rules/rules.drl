@@ -10,8 +10,10 @@ import com.securityoperationscenter.siemcenter.model.ErrorLog;
 import com.securityoperationscenter.siemcenter.model.LoginLog;
 import com.securityoperationscenter.siemcenter.model.PaymentLog;
 import com.securityoperationscenter.siemcenter.model.AntivirusThreatDetectionLog;
+import com.securityoperationscenter.siemcenter.SIEMCenterService;
 
 global List maliciousIpAddresses;
+global SIEMCenterService siemCenterService;
 
 rule "Detect when ErrorLog appears"
     when
@@ -28,25 +30,21 @@ rule "Detect malicious ip address"
 end
 
 rule "Fire payment system alarm"
-    when
+	when
         $log: PaymentLog($username: username, $timestamp: timestamp)
+        not PaymentLog(username == $username , timestamp.isAfter($timestamp))
 
         Number(intValue > 50) from accumulate(
             $paymentLogs: PaymentLog(
                 username == $username,
-                over window: time(60s),
+                timestamp.isAfter(LocalDateTime.now().minusSeconds(60))
             ),
             count($paymentLogs)
         )
-    then
-        insert (
-            new Alarm(
-                "PAYMENT",
-                "Payment system alarm!",
-                $username,
-                LocalDateTime.now()
-            )
-        );
+	then
+		Alarm alarm = new Alarm("PAYMENT", "Payment system alarm!", $username, LocalDateTime.now());
+        siemCenterService.saveAlarm(alarm); // comment for tests
+        insert(alarm);
 end
 
 rule "Set account risk level to low when no alarm in past 90 days"
@@ -54,11 +52,9 @@ rule "Set account risk level to low when no alarm in past 90 days"
    when
        $account: Account($username: username)
 
-       Number(intValue = 0) from accumulate(
-            Alarm(
-               username == $username,
-               over window: time(90d),
-            )
+       not Alarm(
+           username == $username,
+           timestamp.isAfter(LocalDateTime.now().minusDays(90))
        )
    then
        modify($account) {

@@ -38,9 +38,10 @@ public class RulesTests {
         int firedRules = kieSession.fireAllRules(filter);
         Assert.assertEquals(0, firedRules);
 
-        Machine testMachine = new Machine("0.0.0.0", "Windows");
+        Machine testMachine = new Machine(1L,"0.0.0.0", "Windows");
 
         ErrorLog errorLog = new ErrorLog(
+            1L,
             LocalDateTime.now(),
             testMachine,
             "testApplication"
@@ -72,9 +73,10 @@ public class RulesTests {
         int firedRules = kieSession.fireAllRules(filter);
         Assert.assertEquals(0, firedRules);
 
-        Machine testMachine = new Machine("0.0.0.0", "Windows");
+        Machine testMachine = new Machine(1L, "0.0.0.0", "Windows");
 
         LoginLog loginLog = new LoginLog(
+            1L,
             LocalDateTime.now(),
             testMachine,
             "testApplication",
@@ -89,6 +91,7 @@ public class RulesTests {
 
         kieSession = createKieSessionFromDRL(drl);
         loginLog = new LoginLog(
+            1L,
             LocalDateTime.now(),
             testMachine,
             "testApplication",
@@ -98,6 +101,7 @@ public class RulesTests {
         kieSession.insert(loginLog);
 
         loginLog = new LoginLog(
+            1L,
             LocalDateTime.now(),
             testMachine,
             "testApplication",
@@ -107,6 +111,7 @@ public class RulesTests {
         kieSession.insert(loginLog);
 
         loginLog = new LoginLog(
+            1L,
             LocalDateTime.now(),
             testMachine,
             "testApplication",
@@ -143,11 +148,12 @@ public class RulesTests {
 
         LoginLog loginLog;
 
-        Machine testMachine1 = new Machine("0.0.0.0", "Windows");
-        Machine testMachine2 = new Machine("0.0.0.1", "Windows");
+        Machine testMachine1 = new Machine(1L,"0.0.0.0", "Windows");
+        Machine testMachine2 = new Machine(2L, "0.0.0.1", "Windows");
 
         for (int i = 0; i < 10; i++) {
             loginLog = new LoginLog(
+                1L,
                 LocalDateTime.now().plusMinutes(i),
                 testMachine1,
                 "testApplication",
@@ -160,11 +166,12 @@ public class RulesTests {
 
         for (int i = 0; i < 10; i++) {
             loginLog = new LoginLog(
-                    LocalDateTime.now().plusMinutes(i),
-                    testMachine2,
-                    "testApplication",
-                    "testUsername",
-                    false
+                1L,
+                LocalDateTime.now().plusMinutes(i),
+                testMachine2,
+                "testApplication",
+                "testUsername",
+                false
             );
 
             kieSession.insert(loginLog);
@@ -178,6 +185,7 @@ public class RulesTests {
 
         for (int i = 0; i < 15; i++) {
             loginLog = new LoginLog(
+                1L,
                 LocalDateTime.now().plusMinutes(i),
                 testMachine1,
                 "testApplication",
@@ -215,9 +223,10 @@ public class RulesTests {
         int firedRules = kieSession.fireAllRules(filter);
         Assert.assertEquals(0, firedRules);
 
-        Machine testMachine = new Machine("0.0.0.0", "Windows");
+        Machine testMachine = new Machine(1L,"0.0.0.0", "Windows");
 
         LoginLog loginLog = new LoginLog(
+            1L,
             LocalDateTime.now(),
             testMachine,
             "testApplication",
@@ -227,6 +236,7 @@ public class RulesTests {
         kieSession.insert(loginLog);
 
         loginLog = new LoginLog(
+            1L,
             LocalDateTime.now().plusDays(20),
             testMachine,
             "testApplication",
@@ -242,6 +252,7 @@ public class RulesTests {
         kieSession = createKieSessionFromDRL(drl);
 
         loginLog = new LoginLog(
+            1L,
             LocalDateTime.now().minusDays(100),
             testMachine,
             "testApplication",
@@ -276,13 +287,14 @@ public class RulesTests {
         int firedRules = kieSession.fireAllRules(filter);
         Assert.assertEquals(0, firedRules);
 
-        Machine machine1 = new Machine("0.0.0.0", "Windows");
-        Machine machine2 = new Machine("0.0.0.1", "Windows");
+        Machine machine1 = new Machine(1L,"0.0.0.0", "Windows");
+        Machine machine2 = new Machine(2L,"0.0.0.1", "Windows");
 
         AntivirusThreatDetectionLog log;
 
         for (int i = 0; i < 5; i++) {
             log = new AntivirusThreatDetectionLog(
+                1L,
                 LocalDateTime.now(),
                 machine1,
                 "testApplication"
@@ -292,6 +304,7 @@ public class RulesTests {
 
         for (int i = 0; i < 5; i++) {
             log = new AntivirusThreatDetectionLog(
+                1L,
                 LocalDateTime.now(),
                 machine2,
                 "testApplication"
@@ -305,9 +318,10 @@ public class RulesTests {
 
         kieSession = createKieSessionFromDRL(drl);
 
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 10; i++) {
             log = new AntivirusThreatDetectionLog(
-                LocalDateTime.now(),
+                1L,
+                LocalDateTime.now().plusMinutes(i),
                 machine1,
                 "testApplication"
             );
@@ -334,10 +348,11 @@ public class RulesTests {
         kieSession = kieContainer.newKieSession();
         kieSession.setGlobal("maliciousIpAddresses", maliciousIpAddresses);
 
-        Machine okMachine = new Machine("okIP", "Windows");
-        Machine maliciousMachine = new Machine("maliciousIP", "Windows");
+        Machine okMachine = new Machine(1L,"okIP", "Windows");
+        Machine maliciousMachine = new Machine(1L,"maliciousIP", "Windows");
 
         LoginLog log = new LoginLog(
+            1L,
             LocalDateTime.now(),
             okMachine,
             "testApplication",
@@ -354,6 +369,7 @@ public class RulesTests {
         kieSession.setGlobal("maliciousIpAddresses", maliciousIpAddresses);
 
         log = new LoginLog(
+            1L,
             LocalDateTime.now(),
             maliciousMachine,
             "testApplication",
@@ -375,11 +391,12 @@ public class RulesTests {
         Assert.assertEquals(0, firedRules);
 
         LocalDateTime now = LocalDateTime.now();
-        Machine machine = new Machine("0.0.0.0", "Windows");
+        Machine machine = new Machine(1L,"0.0.0.0", "Windows");
         PaymentLog paymentLog;
 
         for (int i = 0; i < 51; i++) {
              paymentLog = new PaymentLog(
+                1L,
                 now.minusSeconds(50 - i + 1),
                 machine,
                 "testApplication",

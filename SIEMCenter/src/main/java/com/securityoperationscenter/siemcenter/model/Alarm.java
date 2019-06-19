@@ -1,9 +1,12 @@
 package com.securityoperationscenter.siemcenter.model;
 
+import org.kie.api.definition.type.Role;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Role(Role.Type.EVENT)
 public class Alarm {
 
     private static final long serialVersionUID = 1L;
@@ -24,6 +27,8 @@ public class Alarm {
 
     @Column
     private LocalDateTime timestamp;
+
+    public Alarm() {}
 
     public Alarm(String type, String message, String username, LocalDateTime timestamp) {
         this.type = type;

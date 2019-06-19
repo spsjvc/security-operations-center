@@ -7,8 +7,8 @@ public class LoginLog extends Log {
     private String username;
     private boolean successful;
 
-    public LoginLog(LocalDateTime timestamp, Machine machine, String application, String username, boolean successful) {
-        super(timestamp, machine, application);
+    public LoginLog(Long id, LocalDateTime timestamp, Machine machine, String application, String username, boolean successful) {
+        super(id, timestamp, machine, application);
 
         this.username = username;
         this.successful = successful;

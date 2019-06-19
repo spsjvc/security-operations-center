@@ -5,20 +5,27 @@ days
 import java.time.LocalDateTime;
 import com.securityoperationscenter.siemcenter.model.LoginLog;
 
-template "unsuccessful-logins-same-ip"
+template "unsuccessful+logins-same-ip"
 
 rule "@{logins} unsuccessful logins from the same ip in @{days} days"
     when
         $log: LoginLog(
             successful != true,
-            $ip: machine.ip
+            $ip: machine.ip,
+            timestamp.isAfter(LocalDateTime.now().minusDays(@{days}))
+        )
+        not LoginLog(
+            successful != true,
+            $ip == machine.ip,
+            timestamp.isAfter(LocalDateTime.now().minusDays(@{days})),
+            timestamp.isAfter($log.getTimestamp())
         )
 
         Number(intValue >= @{logins}) from accumulate(
             $logs: LoginLog(
                 successful != true,
                 $ip == machine.ip,
-                this meets[@{days}d] $log
+                timestamp.isAfter(LocalDateTime.now().minusDays(@{days}))
             ),
             count($logs)
         )

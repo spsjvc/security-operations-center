@@ -3,16 +3,21 @@ package com.securityoperationscenter.siemcenter.model;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import java.time.LocalDateTime;
 
+@Entity
 @Role(Role.Type.EVENT)
-@Timestamp("timestamp")
 public class PaymentLog extends Log {
 
+    @Column
     private String username;
 
-    public PaymentLog(LocalDateTime timestamp, Machine machine, String application, String username) {
-        super(timestamp, machine, application);
+    public PaymentLog() {}
+
+    public PaymentLog(Long id, LocalDateTime timestamp, Machine machine, String application, String username) {
+        super(id, timestamp, machine, application);
 
         this.username = username;
     }

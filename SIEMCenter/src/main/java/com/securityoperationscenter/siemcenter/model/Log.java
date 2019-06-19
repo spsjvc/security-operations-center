@@ -5,7 +5,8 @@ import org.kie.api.definition.type.Role;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
+@MappedSuperclass
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Log {
 
     private static final long serialVersionUID = 1L;
@@ -24,7 +25,10 @@ public abstract class Log {
     @Column
     protected String application;
 
-    public Log(LocalDateTime timestamp, Machine machine, String application) {
+    public Log() {}
+
+    public Log(Long id, LocalDateTime timestamp, Machine machine, String application) {
+        this.id = id;
         this.timestamp = timestamp;
         this.machine = machine;
         this.application = application;

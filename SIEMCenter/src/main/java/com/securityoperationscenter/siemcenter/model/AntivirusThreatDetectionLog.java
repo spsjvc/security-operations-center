@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class AntivirusThreatDetectionLog extends Log {
 
-    public AntivirusThreatDetectionLog(LocalDateTime timestamp, Machine machine, String application) {
-        super(timestamp, machine, application);
+    public AntivirusThreatDetectionLog(Long id, LocalDateTime timestamp, Machine machine, String application) {
+        super(id, timestamp, machine, application);
     }
 }

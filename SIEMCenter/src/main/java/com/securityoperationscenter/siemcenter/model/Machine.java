@@ -18,7 +18,10 @@ public class Machine {
     @Column
     private String operatingSystem;
 
-    public Machine(String ip, String operatingSystem) {
+    public Machine() {}
+
+    public Machine(Long id, String ip, String operatingSystem) {
+        this.id = id;
         this.ip = ip;
         this.operatingSystem = operatingSystem;
     }

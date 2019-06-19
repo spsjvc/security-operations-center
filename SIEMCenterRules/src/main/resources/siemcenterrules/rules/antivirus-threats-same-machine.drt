@@ -9,12 +9,14 @@ template "antivirus-threats-same-machine"
 
 rule "@{threats} antivirus threats from the same machine in the past @{days} days."
     when
-        $threat: AntivirusThreatDetectionLog($machine: machine, $timestamp: timestamp )
+        threat: AntivirusThreatDetectionLog($machine: machine, $timestamp: timestamp )
+        not AntivirusThreatDetectionLog(machine.ip == $machine.ip, timestamp.isAfter($timestamp))
 
         Number(intValue >= @{threats}) from accumulate(
             $threats: AntivirusThreatDetectionLog(
                 machine.ip == $machine.ip,
-                this meets[@{days}d] $threat
+                timestamp.isAfter(LocalDateTime.now().minusDays(@{days})),
+                !timestamp.isAfter(LocalDateTime.now())
             ),
             count($threats)
         )
