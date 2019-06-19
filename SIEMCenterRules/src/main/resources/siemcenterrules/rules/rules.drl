@@ -34,7 +34,7 @@ rule "Fire payment system alarm"
         $log: PaymentLog($username: username, $timestamp: timestamp)
         not PaymentLog(username == $username , timestamp.isAfter($timestamp))
 
-        Number(intValue > 50) from accumulate(
+        Number(intValue >= 50) from accumulate(
             $paymentLogs: PaymentLog(
                 username == $username,
                 timestamp.isAfter(LocalDateTime.now().minusSeconds(60))
@@ -62,4 +62,22 @@ rule "Set account risk level to low when no alarm in past 90 days"
        }
 
        System.out.println("RULE FIRED: Set account risk level to low when no alarm in past 90 days for user: " + $username + ".");
+end
+
+rule "3 unsuccessful logins with the same username"
+    when
+        $log: LoginLog(successful != true, $username: username, $timestamp: timestamp)
+        not LoginLog(successful != true, username == $username , timestamp.isAfter($timestamp))
+
+        Number(intValue >= 2) from accumulate(
+            $logs: LoginLog(
+                successful != true,
+                username == $username
+            ),
+            count($logs)
+        )
+    then
+        Alarm alarm = new Alarm("THREE_UNSUCCESSFUL_LOGINS", "Three unsuccessful logins alarm!", $username, LocalDateTime.now());
+        siemCenterService.saveAlarm(alarm); // comment for tests
+        insert(alarm);
 end

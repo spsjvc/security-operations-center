@@ -6,8 +6,8 @@ public class ProfileUpdateLog extends Log {
 
     private String username;
 
-    public ProfileUpdateLog(Long id, LocalDateTime timestamp, Machine machine, String application, String username) {
-        super(id, timestamp, machine, application);
+    public ProfileUpdateLog(LocalDateTime timestamp, Machine machine, String application, String username) {
+        super(timestamp, machine, application);
 
         this.username = username;
     }

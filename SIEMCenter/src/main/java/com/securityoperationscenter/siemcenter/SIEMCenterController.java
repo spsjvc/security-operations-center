@@ -23,10 +23,15 @@ public class SIEMCenterController {
     }
 
     @RequestMapping(value="/simulate-payment-system-alarm", method=RequestMethod.POST)
-    public ResponseEntity<Void> simulatePaymentSystemAlarm(){
-        log.debug("Simulating log");
-
+    public ResponseEntity<Void> simulatePaymentSystemAlarm() {
         siemCenterService.simulatePaymentSystemAlarm();
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/simulate-three-unsuccessful-logins-alarm", method=RequestMethod.POST)
+    public ResponseEntity<Void> simulateThreeUnsuccessfulLoginsAlarm() {
+        siemCenterService.simulateThreeUnsuccessfulLoginsAlarm();
 
         return new ResponseEntity<Void>(HttpStatus.OK);
     }

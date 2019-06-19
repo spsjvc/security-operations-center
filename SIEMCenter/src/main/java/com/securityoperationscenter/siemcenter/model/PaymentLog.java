@@ -16,8 +16,8 @@ public class PaymentLog extends Log {
 
     public PaymentLog() {}
 
-    public PaymentLog(Long id, LocalDateTime timestamp, Machine machine, String application, String username) {
-        super(id, timestamp, machine, application);
+    public PaymentLog(LocalDateTime timestamp, Machine machine, String application, String username) {
+        super(timestamp, machine, application);
 
         this.username = username;
     }

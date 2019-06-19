@@ -1,6 +1,7 @@
 package com.securityoperationscenter.siemcenter;
 
 import com.securityoperationscenter.siemcenter.model.Alarm;
+import com.securityoperationscenter.siemcenter.model.LoginLog;
 import com.securityoperationscenter.siemcenter.model.Machine;
 import com.securityoperationscenter.siemcenter.model.PaymentLog;
 import com.securityoperationscenter.siemcenter.repositories.AlarmRepository;
@@ -52,13 +53,13 @@ public class SIEMCenterService {
 
     public void simulatePaymentSystemAlarm() {
         this.seed();
+
         LocalDateTime now = LocalDateTime.now();
         Machine machine = machineRepository.getOne(1L);
         PaymentLog paymentLog;
 
         for (int i = 0; i < 50; i++) {
             paymentLog = new PaymentLog(
-                1L + i,
                 now.minusSeconds(50 - i + 1),
                 machine,
                 "TestApplication",
@@ -67,6 +68,28 @@ public class SIEMCenterService {
 
             logRepository.save(paymentLog);
             kieSession.insert(paymentLog);
+        }
+
+        this.kieSession.fireAllRules();
+    }
+
+    public void simulateThreeUnsuccessfulLoginsAlarm() {
+        this.seed();
+
+        LocalDateTime now = LocalDateTime.now();
+        Machine machine = machineRepository.getOne(1L);
+        LoginLog loginLog;
+
+        for (int i = 0; i < 3; i++) {
+            loginLog = new LoginLog(
+                LocalDateTime.now().plusSeconds(i),
+                machine,
+                "TestApplication",
+                "username2",
+                false
+            );
+            logRepository.save(loginLog);
+            kieSession.insert(loginLog);
         }
 
         this.kieSession.fireAllRules();

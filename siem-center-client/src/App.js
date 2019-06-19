@@ -22,6 +22,19 @@ export default function() {
           </Button>
         </Col>
       </Row>
+      <Row style={{ marginTop: '1rem' }}>
+        <Col md={4}>
+          <Button
+            onClick={() => {
+              axios.post(
+                'http://localhost:8080/simulate-three-unsuccessful-logins-alarm'
+              )
+            }}
+          >
+            Simulate Three Unsuccessful Logins
+          </Button>
+        </Col>
+      </Row>
     </Container>
   )
 }

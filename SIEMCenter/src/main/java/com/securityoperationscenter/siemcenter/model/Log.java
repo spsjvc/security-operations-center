@@ -27,8 +27,7 @@ public abstract class Log {
 
     public Log() {}
 
-    public Log(Long id, LocalDateTime timestamp, Machine machine, String application) {
-        this.id = id;
+    public Log(LocalDateTime timestamp, Machine machine, String application) {
         this.timestamp = timestamp;
         this.machine = machine;
         this.application = application;

@@ -1,14 +1,22 @@
 package com.securityoperationscenter.siemcenter.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import java.time.LocalDateTime;
 
+@Entity
 public class LoginLog extends Log {
 
+    @Column
     private String username;
+
+    @Column
     private boolean successful;
 
-    public LoginLog(Long id, LocalDateTime timestamp, Machine machine, String application, String username, boolean successful) {
-        super(id, timestamp, machine, application);
+    public LoginLog() {}
+
+    public LoginLog(LocalDateTime timestamp, Machine machine, String application, String username, boolean successful) {
+        super(timestamp, machine, application);
 
         this.username = username;
         this.successful = successful;
