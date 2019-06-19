@@ -48,6 +48,19 @@ export default function() {
           </Button>
         </Col>
       </Row>
+      <Row style={{ marginTop: '1rem' }}>
+        <Col md={8}>
+          <Button
+            onClick={() => {
+              axios.post(
+                'http://localhost:8080/simulate-login-from-inactive-account'
+              )
+            }}
+          >
+            Simulate Login from Inactive Account
+          </Button>
+        </Col>
+      </Row>
     </Container>
   )
 }

@@ -42,4 +42,11 @@ public class SIEMCenterController {
 
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
+
+    @RequestMapping(value="/simulate-login-from-inactive-account", method=RequestMethod.POST)
+    public ResponseEntity<Void> simulateLoginFromInactiveAccount() {
+        siemCenterService.simulateLoginFromInactiveAccount();
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
 }

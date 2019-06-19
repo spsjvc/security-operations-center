@@ -112,4 +112,22 @@ public class SIEMCenterService {
 
         this.kieSession.fireAllRules();
     }
+
+    public void simulateLoginFromInactiveAccount() {
+        this.seed();
+
+        Machine machine = machineRepository.getOne(1L);
+
+        LoginLog log = new LoginLog(
+            LocalDateTime.now().minusDays(100),
+            machine,
+            "SomeApplication",
+            "inactive_username",
+            true
+        );
+
+        logRepository.save(log);
+        kieSession.insert(log);
+        this.kieSession.fireAllRules();
+    }
 }

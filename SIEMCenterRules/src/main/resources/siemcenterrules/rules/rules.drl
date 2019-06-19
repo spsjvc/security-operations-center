@@ -99,3 +99,14 @@ rule "7 antivirus threats from the same machine in the past 10 days."
         siemCenterService.saveAlarm(alarm); // comment for tests
         insert(alarm);
 end
+
+rule "Login from account inactive for 90 days"
+    when
+        $log: LoginLog($username : username)
+        not LoginLog(username == $username, timestamp.isAfter($log.getTimestamp()))
+        not LoginLog(username == $username, successful == true, timestamp.isAfter(LocalDateTime.now().minusDays(90)))
+    then
+        Alarm alarm = new Alarm("LOGIN_FROM_INACTIVE_ACCOUNT", "Login from inactive account alarm!", $username, LocalDateTime.now());
+        siemCenterService.saveAlarm(alarm); // comment for tests
+        insert(alarm);
+end
