@@ -81,3 +81,21 @@ rule "3 unsuccessful logins with the same username"
         siemCenterService.saveAlarm(alarm); // comment for tests
         insert(alarm);
 end
+
+rule "7 antivirus threats from the same machine in the past 10 days."
+    when
+        threat: AntivirusThreatDetectionLog($machine: machine, $timestamp: timestamp )
+        not AntivirusThreatDetectionLog(machine.ip == $machine.ip, timestamp.isAfter($timestamp))
+
+        Number(intValue >= 7) from accumulate(
+            $threats: AntivirusThreatDetectionLog(
+                machine.ip == $machine.ip,
+                timestamp.isAfter(LocalDateTime.now().minusDays(10))
+            ),
+            count($threats)
+        )
+    then
+        Alarm alarm = new Alarm("SEVEN_ANTIVIRUS_THREATS", "Seven antivirus threats alarm!", null, LocalDateTime.now());
+        siemCenterService.saveAlarm(alarm); // comment for tests
+        insert(alarm);
+end

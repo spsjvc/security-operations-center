@@ -35,4 +35,11 @@ public class SIEMCenterController {
 
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
+
+    @RequestMapping(value="/simulate-seven-antivirus-threats-from-the-same-machine", method=RequestMethod.POST)
+    public ResponseEntity<Void> simulateSevenAntivirusThreatsFromTheSameMachine() {
+        siemCenterService.simulateSevenAntivirusThreatsFromTheSameMachine();
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
 }

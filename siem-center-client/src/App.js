@@ -12,7 +12,7 @@ export default function() {
         <h1>Security Operations Center</h1>
       </Row>
       <Row style={{ marginTop: '2rem' }}>
-        <Col md={4}>
+        <Col md={8}>
           <Button
             onClick={() => {
               axios.post('http://localhost:8080/simulate-payment-system-alarm')
@@ -23,7 +23,7 @@ export default function() {
         </Col>
       </Row>
       <Row style={{ marginTop: '1rem' }}>
-        <Col md={4}>
+        <Col md={8}>
           <Button
             onClick={() => {
               axios.post(
@@ -32,6 +32,19 @@ export default function() {
             }}
           >
             Simulate Three Unsuccessful Logins
+          </Button>
+        </Col>
+      </Row>
+      <Row style={{ marginTop: '1rem' }}>
+        <Col md={8}>
+          <Button
+            onClick={() => {
+              axios.post(
+                'http://localhost:8080/simulate-seven-antivirus-threats-from-the-same-machine'
+              )
+            }}
+          >
+            Simulate Seven Antivirus Threats from the Same Machine
           </Button>
         </Col>
       </Row>

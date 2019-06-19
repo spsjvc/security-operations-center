@@ -1,9 +1,6 @@
 package com.securityoperationscenter.siemcenter;
 
-import com.securityoperationscenter.siemcenter.model.Alarm;
-import com.securityoperationscenter.siemcenter.model.LoginLog;
-import com.securityoperationscenter.siemcenter.model.Machine;
-import com.securityoperationscenter.siemcenter.model.PaymentLog;
+import com.securityoperationscenter.siemcenter.model.*;
 import com.securityoperationscenter.siemcenter.repositories.AlarmRepository;
 import com.securityoperationscenter.siemcenter.repositories.LogRepository;
 import com.securityoperationscenter.siemcenter.repositories.MachineRepository;
@@ -90,6 +87,27 @@ public class SIEMCenterService {
             );
             logRepository.save(loginLog);
             kieSession.insert(loginLog);
+        }
+
+        this.kieSession.fireAllRules();
+    }
+
+    public void simulateSevenAntivirusThreatsFromTheSameMachine() {
+        this.seed();
+
+        LocalDateTime now = LocalDateTime.now();
+        Machine machine = machineRepository.getOne(1L);
+
+        AntivirusThreatDetectionLog log;
+
+        for (int i = 0; i < 7; i++) {
+            log = new AntivirusThreatDetectionLog(
+                LocalDateTime.now().plusMinutes(i),
+                machine,
+            "TestApplication2"
+            );
+            logRepository.save(log);
+            kieSession.insert(log);
         }
 
         this.kieSession.fireAllRules();
