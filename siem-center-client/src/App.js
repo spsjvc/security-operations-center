@@ -31,7 +31,7 @@ export default function() {
               )
             }}
           >
-            Simulate Three Unsuccessful Logins
+            Simulate 3 Unsuccessful Logins
           </Button>
         </Col>
       </Row>
@@ -44,7 +44,7 @@ export default function() {
               )
             }}
           >
-            Simulate Seven Antivirus Threats from the Same Machine
+            Simulate 7 Antivirus Threats from the Same Machine
           </Button>
         </Col>
       </Row>
@@ -58,6 +58,19 @@ export default function() {
             }}
           >
             Simulate Login from Inactive Account
+          </Button>
+        </Col>
+      </Row>
+      <Row style={{ marginTop: '1rem' }}>
+        <Col md={8}>
+          <Button
+            onClick={() => {
+              axios.post(
+                'http://localhost:8080/simulate-fifteen-logins-from-the-same-ip'
+              )
+            }}
+          >
+            Simulate 15 Unsuccessful Logins from the Same IP
           </Button>
         </Col>
       </Row>

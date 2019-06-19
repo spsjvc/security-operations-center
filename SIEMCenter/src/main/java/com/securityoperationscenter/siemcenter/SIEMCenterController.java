@@ -49,4 +49,11 @@ public class SIEMCenterController {
 
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
+
+    @RequestMapping(value="/simulate-fifteen-logins-from-the-same-ip", method=RequestMethod.POST)
+    public ResponseEntity<Void> simulateFifteenUnsuccessfulLoginsFromTheSameIP() {
+        siemCenterService.simulateFifteenUnsuccessfulLoginsFromTheSameIP();
+
+        return new ResponseEntity<Void>(HttpStatus.OK);
+    }
 }

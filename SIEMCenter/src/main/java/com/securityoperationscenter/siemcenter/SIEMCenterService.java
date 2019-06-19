@@ -41,7 +41,9 @@ public class SIEMCenterService {
 
     public void seed() {
         Machine machine = new Machine(1L,"0.0.0.0", "Windows");
+        Machine machine2 = new Machine(2L,"182.229.66.104", "macOS");
         machineRepository.save(machine);
+        machineRepository.save(machine2);
     }
 
     public void saveAlarm(Alarm alarm) {
@@ -82,7 +84,7 @@ public class SIEMCenterService {
                 LocalDateTime.now().plusSeconds(i),
                 machine,
                 "TestApplication",
-                "username2",
+                "username21242",
                 false
             );
             logRepository.save(loginLog);
@@ -128,6 +130,40 @@ public class SIEMCenterService {
 
         logRepository.save(log);
         kieSession.insert(log);
+        this.kieSession.fireAllRules();
+    }
+
+    public void simulateFifteenUnsuccessfulLoginsFromTheSameIP() {
+        this.seed();
+
+        Machine machine = machineRepository.getOne(2L);
+
+        LoginLog log;
+
+        log = new LoginLog(
+            LocalDateTime.now().minusDays(40),
+            machine,
+            "Application2",
+            "randomUsername",
+            false
+        );
+
+        logRepository.save(log);
+        kieSession.insert(log);
+
+        for (int i = 0; i < 15; i++) {
+            log = new LoginLog(
+                LocalDateTime.now().plusMinutes(i),
+                machine,
+                "Application2",
+                "randomUsername" + i,
+                false
+            );
+
+            logRepository.save(log);
+            kieSession.insert(log);
+        }
+
         this.kieSession.fireAllRules();
     }
 }

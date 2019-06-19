@@ -69,7 +69,7 @@ rule "3 unsuccessful logins with the same username"
         $log: LoginLog(successful != true, $username: username, $timestamp: timestamp)
         not LoginLog(successful != true, username == $username , timestamp.isAfter($timestamp))
 
-        Number(intValue >= 2) from accumulate(
+        Number(intValue >= 3) from accumulate(
             $logs: LoginLog(
                 successful != true,
                 username == $username
@@ -102,11 +102,39 @@ end
 
 rule "Login from account inactive for 90 days"
     when
-        $log: LoginLog($username : username)
+        $log: LoginLog($username : username, successful == true)
         not LoginLog(username == $username, timestamp.isAfter($log.getTimestamp()))
         not LoginLog(username == $username, successful == true, timestamp.isAfter(LocalDateTime.now().minusDays(90)))
     then
         Alarm alarm = new Alarm("LOGIN_FROM_INACTIVE_ACCOUNT", "Login from inactive account alarm!", $username, LocalDateTime.now());
+        siemCenterService.saveAlarm(alarm); // comment for tests
+        insert(alarm);
+end
+
+rule "15 unsuccessful logins from the same ip in 5 days"
+    when
+        $log: LoginLog(
+            successful != true,
+            $ip: machine.ip,
+            timestamp.isAfter(LocalDateTime.now().minusDays(5))
+        )
+        not LoginLog(
+            successful != true,
+            $ip == machine.ip,
+            timestamp.isAfter(LocalDateTime.now().minusDays(5)),
+            timestamp.isAfter($log.getTimestamp())
+        )
+
+        Number(intValue >= 15) from accumulate(
+            $logs: LoginLog(
+                successful != true,
+                $ip == machine.ip,
+                timestamp.isAfter(LocalDateTime.now().minusDays(5))
+            ),
+            count($logs)
+        )
+    then
+        Alarm alarm = new Alarm("UNSUCCESSFUL_LOGINS_SAME_IP", "15 unsuccessful logins from the same IP alarm!", $ip, LocalDateTime.now());
         siemCenterService.saveAlarm(alarm); // comment for tests
         insert(alarm);
 end
