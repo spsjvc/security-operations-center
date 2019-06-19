@@ -1,12 +1,28 @@
 package com.securityoperationscenter.siemcenter.model;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
 public class Alarm {
 
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
+    private Long id;
+
+    @Column
     private String type;
+
+    @Column
     private String message;
+
+    @Column
     private String username;
+
+    @Column
     private LocalDateTime timestamp;
 
     public Alarm(String type, String message, String username, LocalDateTime timestamp) {
@@ -14,6 +30,14 @@ public class Alarm {
         this.message = message;
         this.username = username;
         this.timestamp = timestamp;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getType() {

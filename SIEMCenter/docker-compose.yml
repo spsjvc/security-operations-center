@@ -1,0 +1,17 @@
+version: "3"
+services:
+  siem-center-db:
+    image: mariadb:10.2
+    container_name: siem-center-db
+    environment:
+      MYSQL_DATABASE: siem-center-db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+    volumes:
+      - siemcentermariadbdata:/var/lib/mysql
+
+volumes:
+  siemcentermariadbdata:
