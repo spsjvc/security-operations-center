@@ -1,15 +1,20 @@
 package com.securityoperationscenter.siemcenter;
 
+import com.securityoperationscenter.siemcenter.dto.AlarmDTO;
 import com.securityoperationscenter.siemcenter.model.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class SIEMCenterController {
 
@@ -55,5 +60,12 @@ public class SIEMCenterController {
         siemCenterService.simulateFifteenUnsuccessfulLoginsFromTheSameIP();
 
         return new ResponseEntity<Void>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/alarms", method=RequestMethod.GET)
+    public ResponseEntity<List<AlarmDTO>> getAlarms() {
+        List<AlarmDTO> alarms = siemCenterService.getAlarms();
+
+        return new ResponseEntity<>(alarms, HttpStatus.OK);
     }
 }

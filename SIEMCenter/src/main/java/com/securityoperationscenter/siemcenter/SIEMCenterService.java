@@ -1,5 +1,6 @@
 package com.securityoperationscenter.siemcenter;
 
+import com.securityoperationscenter.siemcenter.dto.AlarmDTO;
 import com.securityoperationscenter.siemcenter.model.*;
 import com.securityoperationscenter.siemcenter.repositories.AlarmRepository;
 import com.securityoperationscenter.siemcenter.repositories.LogRepository;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class SIEMCenterService {
@@ -165,5 +168,16 @@ public class SIEMCenterService {
         }
 
         this.kieSession.fireAllRules();
+    }
+
+    public List<AlarmDTO> getAlarms() {
+        List<AlarmDTO> alarmsDTOs = new ArrayList<AlarmDTO>();
+        ArrayList<Alarm> alarms = (ArrayList<Alarm>) alarmRepository.findAll();
+
+        for (Alarm alarm : alarms) {
+            alarmsDTOs.add(new AlarmDTO(alarm));
+        }
+
+        return alarmsDTOs;
     }
 }
